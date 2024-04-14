@@ -39,7 +39,11 @@ class KDTree(object):
                 
         def make(points, i=0):
             if len(points) > 1:
-                points.sort(key=lambda x: x[i])
+                if type(points).__module__ == 'numpy' and type(points).__name__ == 'ndarray':
+                    # Numpy-specific fix
+                    points = points[points[:, i].argsort()]
+                else:
+                    points.sort(key=lambda x: x[i])
                 i = (i + 1) % dim
                 m = len(points) >> 1
                 return [make(points[:m], i), make(points[m + 1:], i), 
